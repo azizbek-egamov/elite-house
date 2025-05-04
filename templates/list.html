@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>To'lov Grafigi</title>
+</head>
+<body>
+    <div class="title">TO'LOV GRAFIGI</div>
+    
+    <div class="header-info">
+        <p>Mijoz: {{ contract.client.full_name }} {{ contract.passport }}</p>
+        <div>
+                <p>Xonadon bahosi: <span class="amount">{{ total_price }}</span></p>
+            <p>{{ down_payment_percentage }}% oldindan to'lov: <span class="amount">{{ down_payment }}</span></p>
+            <p>Qoldiq: <span class="amount">{{ remaining_balance }}</span></p>
+        </div>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Kun</th>
+                <th>Oy</th>
+                <th>Yil</th>
+                <th>To'lov</th>
+                <th>Qoldiq</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in pay_list %}
+            <tr>
+                <td>{{ row.number }}</td>
+                <td>{{ row.day }}</td>
+                <td>{{ row.month }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.payment }}</td>
+                <td>{{ row.remaining }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="total-row">
+                <td colspan="4">Jami:</td>
+                <td>{{ remaining_balance }}</td>
+                <td>0</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="signature-line">
+        <div>
+            <p>Rahbar: «{{company.name}}» MCHJ     _____________</p>
+        </div>
+        <div>
+            <p>Mijoz: {{ contract.client.full_name|slice:":1" }}.{{ contract.client.full_name.split.1|slice:":1" }}    _____________</p>
+        </div>
+    </div>
+</body>
+</html>

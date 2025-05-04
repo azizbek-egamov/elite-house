@@ -1,0 +1,591 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load static %}
+{% load math_filters %}
+{% block title %}Shartnomalar ro'yxati - Xorazm Elite House{% endblock title %}
+
+{% block item %}
+<div class="app-container">
+
+    <!-- App hero header starts -->
+    <div class="app-hero-header d-flex align-items-center">
+
+    <!-- Breadcrumb starts -->
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+        <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+        <a href="/">Asosiy</a>
+        </li>
+        <li class="breadcrumb-item text-primary" aria-current="page">
+        Shartnomalar ro'yxati
+        </li>
+    </ol>
+    <!-- Breadcrumb ends -->
+
+    </div>
+    <!-- App Hero header ends -->
+
+    <!-- App body starts -->
+    <div class="app-body">
+        {% include 'messages.html' %}
+    <!-- Row starts -->
+    <div class="row gx-3">
+        <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+            <h5 class="card-title">Shartnomalar ro'yxati</h5>
+            <div class="d-flex gap-2 ms-auto">
+                <form  method="get">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                        <i class="ri-search-line"></i>
+                        </span>
+                        <input type="text" class="form-control" name="q" value="{{search_value}}" id="search-input" placeholder="Passport raqami" oninput="updateLink()">
+                        <a href="?" id="search-href" class="btn btn-primary">Qidirish</a>
+                    </div>
+                </form>
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Filter</button>
+                {% if request.user.username != "financeadmin" %}
+                <a href="{% url "contract-create" %}" class="btn btn-primary ms-auto">Shartnoma qo'shish</a>
+                {% endif %}
+            </div>
+            </div>
+            <div class="card-body">
+
+            <!-- Table starts -->
+            <div class="table-responsive table-container">
+                <table id="basicExample" class="table table-hover truncate m-0 align-middle">
+                <thead>
+                    <tr>
+                    <th>№</th>
+                    <th>To'liq ismi</th>
+                    <th>Telefon raqam</th>
+                    <th>Passport seriyasi</th>
+                    <th>Kompaniya</th>
+                    <th>Holati</th>
+                    <th>Harakat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in contract %}
+                    <tr>
+                        <td>#{{i.contract}}</td>
+                        <td>{{i.client.full_name}}</td>
+                        <td>{{i.client.phone}}</td>
+                        <td>{{i.passport}}</td>
+                        <td>{{i.home.building.city.company.name}}</td>
+                        <td>
+                            {% if i.status == "Rasmiylashtirilmoqda" %}
+                            <span class="badge rounded-pill text-bg-warning">Rasmiylashtirilmoqda</span>
+                            {% elif i.status == "Rasmiylashtirilgan" %}
+                            <span class="badge rounded-pill text-bg-primary">Rasmiylashtirilgan</span>
+                            {% elif i.status == "Tugallangan" %}
+                            <span class="badge rounded-pill text-bg-success">Tugallangan</span>
+                            {% else %}
+                            <span class="badge rounded-pill text-bg-primary">Bekor qilingan</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-inline-flex gap-1">
+                                <button class="btn btn-outline-info btn-sm view-details-btn" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    data-bs-title="Batafsil ma'lumot"
+                                    onclick="showContractDetails(
+                                        '{{i.contract}}', 
+                                        '{{i.client.full_name}}', 
+                                        '{{i.client.phone}}', 
+                                        '{{i.passport}}', 
+                                        '{{i.home.building.city.company.name}}', 
+                                        '{{i.home.building.city.name}}, {{i.home.building.name}}, {{i.home.home.padez_number}} - padez, {{i.home.home.home_number}} - uy', 
+                                        '{{i.home.home.field}}', 
+                                        '{{i.payment_info.initial_payment|intcomma}}', 
+                                        '{{i.payment_info.total_paid|intcomma}}', 
+                                        '{{i.payment_info.total_remaining|intcomma}}', 
+                                        '{{i.payment_info.monthly_payment|intcomma}}', 
+                                        {% if i.payment_info.next_unpaid_month %}'{{i.payment_info.next_unpaid_month}}-oy: {{i.payment_info.next_unpaid_amount|intcomma}} so\'m'{% else %}'To\'langan'{% endif %}, 
+                                        '{{i.payment_info.remaining_months}}', 
+                                        '{{i.payment_info.is_in_debt}}', 
+                                        '{{i.status}}', 
+                                        '{{i.created}}'
+                                    )">
+                                    <i class="ri-eye-line"></i>
+                                </button>
+                            
+                                        
+                                {% if i.status == "Rasmiylashtirilgan" and i.payment_info.total_remaining > 0 %}
+                                <button class="btn btn-outline-primary btn-sm qarz-btn" 
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top" 
+                                        data-bs-title="To'lov qilish"
+                                        onclick="showDebtor({{ i.pk }}, {{ i.payment_info.total_remaining }})" 
+                                        data-id="{{ i.pk }}"
+                                        data-remaining="{{ i.payment_info.total_remaining }}">
+                                    <i class="ri-bank-card-line"></i>
+                                </button>
+                                {% else %}
+                                <span class="btn-placeholder"></span>
+                                {% endif %}
+                                <a href="/contract/{{i.pk}}/list/" class="btn btn-outline-warning btn-sm"
+                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="To'lovlar jadvali">
+                                <i class="ri-list-check-3"></i>
+                            </a>
+                                        
+                                <a href="/contract/edit/{{i.pk}}" class="btn btn-outline-success btn-sm"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tahrirlash">
+                                    <i class="ri-edit-box-line"></i>
+                                </a>
+                                        
+                                <a href="/contract/{{i.pk}}" target="_blank" class="btn btn-outline-primary btn-sm"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Shartnomani yuklab olish">
+                                    <i class="ri-contract-line"></i>
+                                </a>
+                                <button class="btn btn-outline-danger btn-sm delete-btn" 
+                                data-bs-toggle="tooltip" 
+                                data-bs-target="#delRow" 
+                                data-id="{{ i.pk }}" 
+                                data-bs-placement="top" 
+                                data-bs-title="O'chirish">
+                                <i class="ri-delete-bin-line"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+            <!-- Table ends -->
+
+            <!-- Contract Details Modal -->
+            <div class="modal fade" id="contractDetailsModal" tabindex="-1" aria-labelledby="contractDetailsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="contractDetailsModalLabel">Shartnoma tafsilotlari</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-light">
+                                            <h6 class="mb-0">Mijoz ma'lumotlari</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Shartnoma №:</strong> <span id="detail-contract-number"></span></p>
+                                            <p><strong>To'liq ismi:</strong> <span id="detail-full-name"></span></p>
+                                            <p><strong>Telefon raqam:</strong> <span id="detail-phone"></span></p>
+                                            <p><strong>Passport seriyasi:</strong> <span id="detail-passport"></span></p>
+                                            <p><strong>Kompaniya:</strong> <span id="detail-company"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-light">
+                                            <h6 class="mb-0">Uy ma'lumotlari</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Uy joylashuvi:</strong> <span id="detail-location"></span></p>
+                                            <p><strong>Maydoni (kv/m):</strong> <span id="detail-field"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-light">
+                                            <h6 class="mb-0">To'lov ma'lumotlari</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Boshlang'ich to'lov:</strong> <span id="detail-initial-payment"></span> so'm</p>
+                                            <p><strong>Jami to'langan:</strong> <span id="detail-total-paid"></span> so'm</p>
+                                            <p><strong>Qolgan qarz:</strong> <span id="detail-total-remaining"></span> so'm</p>
+                                            <p><strong>Oylik to'lov:</strong> <span id="detail-monthly-payment"></span> so'm</p>
+                                            <p><strong>Keyingi to'lov:</strong> <span id="detail-next-unpaid"></span></p>
+                                            <p><strong>Qolgan oylar:</strong> <span id="detail-remaining-months"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-light">
+                                            <h6 class="mb-0">Holat ma'lumotlari</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Qarzdor:</strong> <span id="detail-debt-status"></span></p>
+                                            <p><strong>Holati:</strong> <span id="detail-status"></span></p>
+                                            <p><strong>Yaratlgan vaqti:</strong> <span id="detail-created"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Delete Row -->
+            <div class="modal fade" id="delRow" tabindex="-1" aria-labelledby="delRowLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="delRowLabel">
+                        O'chirish
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    Ma'lumotni o'chirishga ishonchingiz komilmi?
+                    </div>
+                    <div class="modal-footer">
+                    <div class="d-flex justify-content-end gap-2">
+                        <button class="btn btn-outline-secondary" data-bs-dismiss="modal" aria-label="Close">Yo'q</button>
+                        <button class="btn btn-danger confirm-delete" data-bs-dismiss="modal">Xa</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Payment Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="mb-3">
+                                    <b>Ixtiyoriy to'lov qilish</b>
+                                    <h1 class="modal-title" style="font-size: 17px;">Qarzdorlik summasi: <span id="qarz_amount"></span></h1>
+                                </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                <label for="amount" class="col-form-label">Summani kiriting:</label>
+                                <input type="number" class="form-control" placeholder="To'lov miqdori" name="customAmount" id="amount" min="1" required>
+                                <input type="hidden" name="contract-id" id="contract-id">
+                                <input type="hidden" name="payment-type" value="custom">
+                                <input type="hidden" name="total-remaining" id="total-remaining">
+                                <div id="amountError" class="text-danger mt-1" style="display: none;">
+                                    To'lov miqdori qolgan qarzdan oshmasligi kerak
+                                </div>
+                                <div id="minAmountError" class="text-danger mt-1" style="display: none;">
+                                    To'lov miqdori kamida 1 so'm bo'lishi kerak
+                                </div>
+                                </div>
+                            </div>  
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                            <button type="submit" class="btn btn-primary" id="paymentSubmitBtn">To'lovni tasdiqlash</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            </div>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasRightLabel">Filterlash</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <form id="filterForm" method="GET">
+                        <div class="mb-3">
+                            <label for="companyFilter" class="form-label"><b>Kompaniya bo'yicha</b></label>
+                            <select class="form-select" id="companyFilter" name="company">
+                                <option value="">Barchasi</option>
+                                {% for company in companies %}
+                                    <option value="{{ company.id }}">{{ company.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="cityFilter" class="form-label"><b>Shahar bo'yicha</b></label>
+                            <select class="form-select" id="cityFilter" name="city">
+                                <option value="">Barchasi</option>
+                                {% for city in cities %}
+                                    <option value="{{ city.id }}">{{ city.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="buildingFilter" class="form-label"><b>Binolar bo'yicha</b></label>
+                            <select class="form-select" id="buildingFilter" name="building">
+                                <option value="">Barchasi</option>
+                                {% for building in buildings %}
+                                    <option value="{{ building.id }}">{{ building.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="debtFilter" class="form-label"><b>Qarzdorlik bo'yicha</b></label>
+                            <select class="form-select" id="debtFilter" name="debt">
+                                <option value="">Barchasi</option>
+                                <option value="1">Qarzdor</option>
+                                <option value="0">Qarzdor emas</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="statusFilter" class="form-label"><b>Holati bo'yicha</b></label>
+                            <select class="form-select" id="statusFilter" name="status">
+                                <option value="">Barchasi</option>
+                                <option value="1">Rasmiylashtirilmoqda</option>
+                                <option value="2">Rasmiylashtirilgan</option>
+                                <option value="3">Tugallangan</option>
+                                <option value="0">Bekor qilingan</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Filterlash</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!-- Row ends -->
+
+    </div>
+    <!-- App body ends -->
+
+
+</div>
+
+<style>
+    .btn-placeholder {
+        display: inline-block;
+        width: 30px; /* tugmaning eni */
+        height: 30px; /* tugmaning balandligi */
+    }
+    
+    /* Responsive card styling for details modal */
+    @media (max-width: 767px) {
+        .modal-dialog.modal-lg {
+            max-width: 95%;
+            margin: 10px auto;
+        }
+    }
+    
+    /* Badge styling for debt status */
+    .badge.debt-status {
+        padding: 5px 10px;
+        border-radius: 4px;
+    }
+    
+    /* Improve table readability */
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    .table th {
+        white-space: nowrap;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let cityId; // O'chirilayotgan shahar ID sini saqlash
+
+        // Har bir o'chirish tugmasini tinglash
+        document.querySelectorAll(".delete-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                cityId = this.getAttribute("data-id"); // O'chirish ID sini olish
+                // Modalni ochish
+                var modal = new bootstrap.Modal(document.getElementById('delRow'));
+                modal.show();
+            });
+        });
+
+        // Modalda "Xa" bosilganda ishlaydi
+        document.querySelector(".confirm-delete").addEventListener("click", function () {
+            if (cityId) {
+                // AJAX so'rovi bilan o'chirishni amalga oshirish
+                fetch(`/contract/delete/${cityId}/`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // O'chirilgan shahar ID si bo'yicha qatorni olib tashlash
+                        document.querySelector(`button[data-id="${cityId}"]`).closest("tr").remove();
+                        // Modalni yopish
+                        var modal = bootstrap.Modal.getInstance(document.getElementById('delRow'));
+                        if (modal) modal.hide();
+                    } else {
+                        alert("O'chirishda xatolik yuz berdi.");
+                    }
+                })
+                .catch(error => {
+                    console.error("O'chirishda xatolik:", error);
+                });
+            }
+        });
+        
+        // To'lov miqdorini tekshirish
+        const amountInput = document.getElementById('amount');
+        if (amountInput) {
+            amountInput.addEventListener('input', validatePaymentAmount);
+        }
+        
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    });
+
+    function showContractDetails(contractNumber, fullName, phone, passport, company, location, field, 
+                                initialPayment, totalPaid, totalRemaining, monthlyPayment, 
+                                nextUnpaid, remainingMonths, isInDebt, status, created) {
+        // Set values in the modal
+        document.getElementById('detail-contract-number').textContent = contractNumber;
+        document.getElementById('detail-full-name').textContent = fullName;
+        document.getElementById('detail-phone').textContent = phone;
+        document.getElementById('detail-passport').textContent = passport;
+        document.getElementById('detail-company').textContent = company;
+        document.getElementById('detail-location').textContent = location;
+        document.getElementById('detail-field').textContent = field;
+        document.getElementById('detail-initial-payment').textContent = initialPayment;
+        document.getElementById('detail-total-paid').textContent = totalPaid;
+        document.getElementById('detail-total-remaining').textContent = totalRemaining;
+        document.getElementById('detail-monthly-payment').textContent = monthlyPayment;
+        document.getElementById('detail-next-unpaid').textContent = nextUnpaid;
+        document.getElementById('detail-remaining-months').textContent = remainingMonths;
+        
+        // Set debt status with appropriate badge
+        const debtStatusElement = document.getElementById('detail-debt-status');
+        if (isInDebt === 'True') {
+            debtStatusElement.innerHTML = '<span class="badge rounded-pill text-bg-danger">Qarzdor</span>';
+        } else {
+            debtStatusElement.innerHTML = '<span class="badge rounded-pill text-bg-primary">Qarzdor emas</span>';
+        }
+        
+        // Set contract status with appropriate badge
+        const statusElement = document.getElementById('detail-status');
+        if (status === 'Rasmiylashtirilmoqda') {
+            statusElement.innerHTML = '<span class="badge rounded-pill text-bg-warning">Rasmiylashtirilmoqda</span>';
+        } else if (status === 'Rasmiylashtirilgan') {
+            statusElement.innerHTML = '<span class="badge rounded-pill text-bg-primary">Rasmiylashtirilgan</span>';
+        } else if (status === 'Tugallangan') {
+            statusElement.innerHTML = '<span class="badge rounded-pill text-bg-success">Tugallangan</span>';
+        } else {
+            statusElement.innerHTML = '<span class="badge rounded-pill text-bg-primary">Bekor qilingan</span>';
+        }
+        
+        document.getElementById('detail-created').textContent = created;
+        
+        // Hide any tooltips that might be showing
+        let tooltipElements = document.querySelectorAll('.view-details-btn');
+        tooltipElements.forEach(tooltipElement => {
+            let tooltip = bootstrap.Tooltip.getInstance(tooltipElement);
+            if (tooltip) {
+                tooltip.hide();
+            }
+        });
+        
+        // Show the modal
+        var detailsModal = new bootstrap.Modal(document.getElementById('contractDetailsModal'));
+        detailsModal.show();
+    }
+
+    function showDebtor(id, remainingAmount) {
+        // Qarzdorlik summasini ko'rsatish
+        document.getElementById('qarz_amount').textContent = new Intl.NumberFormat('ru-RU').format(remainingAmount) + ' so\'m';
+        
+        // Contract ID va total remaining ni o'rnatish
+        document.getElementById('contract-id').value = id;
+        document.getElementById('total-remaining').value = remainingAmount;
+        
+        // Reset error messages
+        document.getElementById('amountError').style.display = 'none';
+        document.getElementById('minAmountError').style.display = 'none';
+        
+        // Reset and set max value for amount input
+        const amountInput = document.getElementById('amount');
+        amountInput.value = '';
+        amountInput.setAttribute('max', remainingAmount);
+        
+        // Disable submit button initially
+        document.getElementById('paymentSubmitBtn').disabled = true;
+        
+        // Tooltipni yopish
+        let tooltipElements = document.querySelectorAll('.qarz-btn');
+        tooltipElements.forEach(tooltipElement => {
+            let tooltip = bootstrap.Tooltip.getInstance(tooltipElement);
+            if (tooltip) {
+                tooltip.hide(); // Tooltipni yopish
+            }
+        });
+
+        // Modalni ochish
+        var modal = new bootstrap.Modal(document.getElementById('exampleModal'));
+        modal.show();
+    }
+
+    function validatePaymentAmount() {
+        const amount = parseFloat(document.getElementById('amount').value) || 0;
+        const maxAmount = parseFloat(document.getElementById('amount').getAttribute('max'));
+        const submitBtn = document.getElementById('paymentSubmitBtn');
+        
+        // Reset error messages
+        document.getElementById('amountError').style.display = 'none';
+        document.getElementById('minAmountError').style.display = 'none';
+        
+        let isValid = true;
+        
+        // Check if amount exceeds remaining balance
+        if (amount > maxAmount) {
+            document.getElementById('amountError').style.display = 'block';
+            isValid = false;
+        }
+        
+        // Check if amount is less than 1 soum
+        if (amount < 1) {
+            document.getElementById('minAmountError').style.display = 'block';
+            isValid = false;
+        }
+        
+        // Enable/disable submit button based on validation
+        submitBtn.disabled = !isValid || amount === 0;
+    }
+
+    function updateLink() {
+        var inputValue = document.getElementById("search-input").value;
+        var link = document.getElementById("search-href");
+        link.href = "?q=" + encodeURIComponent(inputValue);
+    }
+
+    document.getElementById('filterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const building = document.getElementById('buildingFilter').value;
+        const company = document.getElementById('companyFilter').value;
+        const city = document.getElementById('cityFilter').value;
+        const debt = document.getElementById('debtFilter').value;
+        const status = document.getElementById('statusFilter').value;
+
+        let url = '?';
+        if (company) url += `company=${company}&`;
+        if (city) url += `city=${city}&`;
+        if (building) url += `building=${building}&`;
+        if (debt) url += `debt=${debt}&`;
+        if (status) url += `status=${status}&`;
+
+        window.location.href = url.slice(0, -1); // Remove the last '&' or '?'
+    });
+</script>
+{% endblock item %}

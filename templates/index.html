@@ -1,0 +1,739 @@
+{% extends "base.html" %}
+{% block title %}Boshqaruv paneli - Xorazm EliteHouse{% endblock title %}
+{% block item %}
+{% load static %}
+{% if request.user.username == "ceoadmin" %}
+<div class="app-container">
+  <!-- App hero header starts -->
+  <div class="app-hero-header d-flex align-items-center">
+    <!-- Breadcrumb starts -->
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <i class="ri-home-8-line lh-1 pe-3 me-3 border-end"></i>
+        <a href="/">Asosiy</a>
+      </li>
+      <li class="breadcrumb-item text-primary" aria-current="page">
+        Boshqaruv paneli
+      </li>
+      
+    </ol>
+
+    <!-- Breadcrumb ends -->
+  </div>
+  <!-- App Hero header ends -->
+
+  <!-- App body starts -->
+  <div class="app-body">
+    <!-- <div class="card" style="background-color: transparent !important;"> -->
+
+  <!-- </div> -->
+    {% if pay.date == True %}
+
+    <div
+      class="alert alert-warning alert-dismissible fade show"
+      role="alert"
+      style="z-index: 1"
+    >
+      <strong>Diqaat!</strong> Sayt o'chib qolishidan oldin <a href="https://t.me/pycouz"><strong>dasturchi</strong></a> bilan aloqaga chiqishingzini so'raymiz. Server {{pay.month}} da to'liq o'chiriladi. Telefon: <code>+99897 202 3012</code>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    {% endif %}
+    <!-- Row starts -->
+    <div class="row gx-3">
+      <div class="col-12 col-xl-12 col-lg-6 col-md-6 col-sm-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            
+            <div class="d-flex align-items-center">
+              <div class="d-flex flex-column">
+                <h4 class="lh-1 text-primary" style="font-size: calc(24px + 8 * ((100vw - 320px) / 1120));">Assalomu alaykum 👋</h4>
+              </div>
+              <div class="ms-auto">
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Kompaniyani tanlang  </button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            
+            <div class="d-flex align-items-center">
+              <div class="p-2 border border-success rounded-circle me-3">
+                <div class="icon-box md bg-success-subtle rounded-5">
+                  <i class="ri-calendar-line fs-4 text-success"></i>
+                </div>
+              </div>
+              <div class="d-flex flex-column">
+                <h4 class="lh-1">{{tushum.kunlik_tushum}} so'm</h4>
+                <p class="m-0">Bugungi tushum</p>
+              </div>
+            </div>
+            <div class="d-flex align-items-end justify-content-between mt-1">
+              {% comment %} <a class="text-success" href="javascript:void(0);"> {% endcomment %}
+                {% comment %} <span>Ko'proq ko'rish</span>
+                <i class="ri-arrow-right-line text-success ms-1"></i> {%
+                endcomment %}
+              </a>
+              {% comment %}
+              <div class="text-end">
+                <p class="mb-0 text-success">+40%</p>
+                <span class="badge bg-success-subtle text-success small"
+                  >this month</span
+                >
+              </div>
+              {% endcomment %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="p-2 border border-primary rounded-circle me-3">
+                <div class="icon-box md bg-primary-subtle rounded-5">
+                  <i class="ri-calendar-event-line fs-4 text-primary"></i>
+                </div>
+              </div>
+              <div class="d-flex flex-column">
+                <h4 class="lh-1">{{tushum.haftalik_tushum}} so'm</h4>
+                <p class="m-0">Haftalik tushum</p>
+              </div>
+            </div>
+            {% comment %}
+            <div class="d-flex align-items-end justify-content-between mt-1">
+              <a class="text-primary" href="javascript:void(0);">
+                <span>View All</span>
+                <i class="ri-arrow-right-line ms-1"></i>
+              </a>
+              <div class="text-end">
+                <p class="mb-0 text-primary">+30%</p>
+                <span class="badge bg-primary-subtle text-primary small"
+                  >this month</span
+                >
+              </div>
+            </div>
+            {% endcomment %}
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="p-2 border border-danger rounded-circle me-3">
+                <div class="icon-box md bg-danger-subtle rounded-5">
+                  <i class="ri-calendar-2-fill fs-4 text-danger"></i>
+                </div>
+              </div>
+              <div class="d-flex flex-column">
+                <h4 class="lh-1">{{tushum.oylik_tushum}} so'm</h4>
+                <p class="m-0">Oylik tushum</p>
+              </div>
+            </div>
+            {% comment %}
+            <div class="d-flex align-items-end justify-content-between mt-1">
+              <a class="text-danger" href="javascript:void(0);">
+                <span>View All</span>
+                <i class="ri-arrow-right-line ms-1"></i>
+              </a>
+              <div class="text-end">
+                <p class="mb-0 text-danger">+60%</p>
+                <span class="badge bg-danger-subtle text-danger small"
+                  >this month</span
+                >
+              </div>
+            </div>
+            {% endcomment %}
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="p-2 border border-warning rounded-circle me-3">
+                <div class="icon-box md bg-warning-subtle rounded-5">
+                  <i class="ri-money-dollar-circle-line fs-4 text-warning"></i>
+                </div>
+              </div>
+              <div class="d-flex flex-column">
+                <h4 class="lh-1">{{tushum.umumiy}} so'm</h4>
+                <p class="m-0">Umumiy savdo</p>
+              </div>
+            </div>
+            {% comment %}
+            <div class="d-flex align-items-end justify-content-between mt-1">
+              <a class="text-warning" href="javascript:void(0);">
+                <span>View All</span>
+                <i class="ri-arrow-right-line ms-1"></i>
+              </a>
+              <div class="text-end">
+                <p class="mb-0 text-warning">+20%</p>
+                <span class="badge bg-warning-subtle text-warning small"
+                  >this month</span
+                >
+              </div>
+            </div>
+            {% endcomment %}
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-xl-6 col-lg-6 col-md-6 col-sm-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="p-2 border border-warning rounded-circle me-3">
+                <div class="icon-box md bg-warning-subtle rounded-5">
+                  <i class="ri-wallet-2-line fs-4 text-warning"></i>
+                </div>
+              </div>
+              <div class="d-flex flex-column">
+                <h4 class="lh-1">{{qarz}} so'm</h4>
+                <p class="m-0">Umumiy qarzlar</p>
+              </div>
+            </div>
+            {% comment %}
+            <div class="d-flex align-items-end justify-content-between mt-1">
+              <a class="text-warning" href="javascript:void(0);">
+                <span>View All</span>
+                <i class="ri-arrow-right-line ms-1"></i>
+              </a>
+              <div class="text-end">
+                <p class="mb-0 text-warning">+20%</p>
+                <span class="badge bg-warning-subtle text-warning small"
+                  >this month</span
+                >
+              </div>
+            </div>
+            {% endcomment %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Row ends -->
+
+    <!-- Row starts -->
+    <div class="row gx-3">
+      <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex flex-column align-items-center">
+              <div class="icon-box md rounded-5 bg-primary mb-3">
+                <i class="ri-shield-user-line fs-4 lh-1"></i>
+              </div>
+              <h6>Mijozlar</h6>
+              <h2 class="text-primary m-0">{{client_count}}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex flex-column align-items-center">
+              <div class="icon-box md rounded-5 bg-primary mb-3">
+                <i class="ri-building-line fs-4 lh-1"></i>
+              </div>
+              <h6>Binolar</h6>
+              <h2 class="text-primary m-0">{{building_count}}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex flex-column align-items-center">
+              <div class="icon-box md rounded-5 bg-primary mb-3">
+                <i class="ri-psychotherapy-line fs-4 lh-1"></i>
+              </div>
+              <h6>Bu oyda mijozlar</h6>
+              <h2 class="text-primary m-0">{{month_client}}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex flex-column align-items-center">
+              <div class="icon-box md rounded-5 bg-primary mb-3">
+                <i class="ri-contract-line fs-4 lh-1"></i>
+              </div>
+              <h6>Faol shartnomalar</h6>
+              <h2 class="text-primary m-0">{{contract}}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex flex-column align-items-center">
+              <div class="icon-box md rounded-5 bg-primary mb-3">
+                <i class="ri-contract-line fs-4 lh-1"></i>
+              </div>
+              <h6>Tugatilgan shartnomalar</h6>
+              <h2 class="text-primary m-0">{{contract_f}}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Row ends -->
+
+    <!-- Row starts -->
+    <div class="row gx-3">
+      <div class="col-xxl-12 col-sm-12">
+        <div class="card mb-3">
+          <div class="card-header">
+            <h5 class="card-title">Bino ma'lumotlari</h5>
+          </div>
+          <div class="card-body">
+            <div id="building"></div>
+          </div>
+        </div>
+      </div>
+      {% comment %}
+      <div class="col-xxl-12 col-sm-12">
+        <div class="card mb-3">
+          <div class="card-header">
+            <h5 class="card-title">Mijozlar</h5>
+          </div>
+          <div class="card-body">
+            <div id="patients"></div>
+          </div>
+        </div>
+      </div>
+      {% endcomment %} {% comment %}
+      <div class="col-xxl-6 col-sm-12">
+        <div class="card mb-3">
+          <div class="card-header">
+            <h5 class="card-title">Treatment Type</h5>
+          </div>
+          <div class="card-body">
+            <div id="treatment"></div>
+          </div>
+        </div>
+      </div>
+      {% endcomment %}
+      <div class="col-xxl-4 col-sm-6">
+        <div class="card mb-3">
+          <div class="card-header">
+            <h5 class="card-title">Haftalik mijozlar</h5>
+          </div>
+          <div class="card-body">
+            <div id="week_client"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xxl-4 col-sm-6">
+        <div class="card mb-3">
+          <div class="card-header">
+            <h5 class="card-title">Mijozlar qayerdan eshitgan</h5>
+          </div>
+          <div class="card-body">
+            <div class="auto-align-graph">
+              <div id="kuzatuv"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xxl-4 col-sm-6">
+        <div class="card mb-3">
+          <div class="card-header">
+            <h5 class="card-title">Qarzdorlar</h5>
+          </div>
+          <div class="card-body">
+            <div class="auto-align-graph">
+              <div id="debt"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasRightLabel">Filterlash</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="mb-3">
+                <b>Kompaniya bo'yicha</b>
+                <div class="mt-2" style="border-left: 3px solid #6c757d; padding-left: 10px;">
+                    {% for j in company_filter %}
+                    <a href="{{j.url}}" class="d-block">{{j.name}}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+      <!-- Row ends -->
+    </div>
+    <!-- App body ends -->
+  </div>
+
+  <script>
+    var buildings = {
+      series: [{
+        name: 'Bino bandligi',
+        data: {{bino_stat.home_ch|safe}}
+      }],
+      chart: {
+        height: 350,
+        type: 'bar',
+      },
+      plotOptions: {
+        bar: {
+          borderRadius: 5,
+          height: 500,
+          columnWidth: 100,
+          dataLabels: {
+            position: 'top',
+
+          },
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val) {
+          return val + "%";
+        },
+        offsetY: -20,
+        style: {
+          fontSize: '12px',
+          colors: ["#304758"]
+        }
+      },
+      xaxis: {
+        categories: {{bino_stat.bino_name|safe}},
+        position: 'bottom',
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        crosshairs: {
+          fill: {
+            type: 'gradient',
+            gradient: {
+              colorFrom: '#D8E3F0',
+              colorTo: '#BED1E6',
+              stops: [0, 100],
+              opacityFrom: 0.4,
+              opacityTo: 0.5,
+            }
+          }
+        },
+        tooltip: {
+          enabled: true,
+        }
+      },
+      yaxis: {
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false,
+        },
+        labels: {
+          show: false,
+          formatter: function (val) {
+            return val + "%";
+          }
+        }
+      },
+      tooltip: {
+        custom: function({ series, seriesIndex, dataPointIndex, w }) {
+          var city = {{bino_stat.bino_city|safe}}[dataPointIndex]; // Shahar nomlarini olib keladi
+          var value = series[seriesIndex][dataPointIndex]; // Qiymatni olib keladi
+          return `<div style="padding:10px;">
+                    <strong>Bino: ${w.globals.labels[dataPointIndex]}</strong><br/>
+                    Shahar: ${city}<br/>
+                    Bandlik: ${value}%
+                  </div>`;
+        }
+      }
+    };
+
+    var building = new ApexCharts(document.querySelector("#building"), buildings);
+    building.render();
+  </script>
+
+  {% comment %}
+  <script>
+    var options = {
+      chart: {
+        height: 300,
+        type: "line",
+        toolbar: {
+          show: true, // Enable the toolbar
+          tools: {
+            download: true, // Enable the download button
+          },
+        },
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      fill: {
+        type: 'solid',
+        opacity: [0.1, 1, 0.5],
+      },
+      stroke: {
+        curve: "smooth",
+        width: [0, 4, 4],
+      },
+      series: [{
+        name: 'Mijozlar',
+        type: 'area',
+        data: {{oy_mijoz|safe}}
+      }, {
+        name: 'Uy sotib olgan',
+        type: 'line',
+        data: {{uy_olgan|safe}}
+      }, {
+        name: 'Uy sotib olmagan',
+        type: 'line',
+        data: {{uy_olmagan|safe}}
+      }],
+      grid: {
+        borderColor: "#d8dee6",
+        strokeDashArray: 5,
+        xaxis: {
+          lines: {
+            show: true,
+          },
+        },
+        yaxis: {
+          lines: {
+            show: false,
+          },
+        },
+        padding: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 0,
+        },
+      },
+      xaxis: {
+        categories: {{month_list|safe}}
+      },
+      yaxis: {
+        labels: {
+          show: false,
+        },
+      },
+      legend: {
+        position: 'bottom',
+        horizontalAlign: 'center',
+      },
+      colors: ["#116AEF", "#0ebb13", "#FF5733"],
+      markers: {
+        size: 0,
+        opacity: 0.3,
+        colors: ["#116AEF", "#0ebb13", "#FF5733"],
+        strokeColor: "#ffffff",
+        strokeWidth: 1,
+        hover: {
+          size: 7,
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return val;
+          },
+        },
+      },
+    };
+
+    var chart = new ApexCharts(document.querySelector("#patients"), options);
+
+    chart.render();
+  </script>
+  {% endcomment %}
+
+  <script>
+    var options = {
+      series: [{{debtors.debtor}}, {{debtors.nodebtor}}],
+      chart: {
+      type: 'donut',
+      toolbar: {
+        show: true, // Toolbarni ko'rsatish
+        tools: {
+          download: true // Yuklab olish tugmasini faollashtirish
+        }
+      }
+    },
+    labels: ["Qarzdorlar", "To'liq to'laganlar"],
+    colors: ['#E4405F', '#0088CC'],
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 200
+        },
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }]
+    };
+
+    var chart = new ApexCharts(document.querySelector("#debt"), options);
+    chart.render();
+  
+  </script>
+
+  <script>
+    var options = {
+      series: {{kuzatuv|safe}}, // Kelingan ma'lumotlar
+      chart: {
+        width: 380,
+        type: 'pie',
+        toolbar: {
+          show: true, // Toolbarni ko'rsatish
+          tools: {
+            download: true // Yuklab olish tugmasini faollashtirish
+          }
+        }
+      },
+      labels: ["Instagramdan", "Telegramdan", "YouTubeda", "Odamlar orasidan", "Xech qayerdan"],
+      colors: ['#E4405F', '#0088CC', "#E44040", '#4CAF50', '#FFC107'], // Tarmoqlar uchun mos ranglar
+      plotOptions: {
+        pie: {
+          expandOnClick: true, // Foydalanuvchi diagrammadagi segmentni bosganda, u kattalashadi
+          donut: {
+            size: '60%', // Donut shaklini yaratish
+          }
+        }
+      },
+      legend: {
+        show: true, // Legendni ko'rsatish
+        position: 'bottom', // Legend joylashuvi
+        labels: {
+          useSeriesColors: true, // Legenddagi ranglar tarmoq ranglariga mos bo'ladi
+        }
+      },
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200
+          },
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }]
+    };
+
+    var chart = new ApexCharts(document.querySelector("#kuzatuv"), options);
+    chart.render();
+  </script>
+
+  <script>
+    var options = {
+      chart: {
+        height: 160,
+        type: "bar",
+        toolbar: {
+          tools: {
+            download: true, // Enable the download button
+          },
+        },
+      },
+      plotOptions: {
+        bar: {
+          columnWidth: "70%",
+          borderRadius: 2,
+          distributed: true,
+          dataLabels: {
+            position: "center",
+          },
+        },
+      },
+      series: [
+        {
+          name: "Mijozlar",
+          data: {{week_client|safe}},
+        },
+      ],
+      legend: {
+        show: false,
+      },
+      xaxis: {
+        categories: {{week_list|safe}},
+
+        axisBorder: {
+          show: false,
+        },
+        yaxis: {
+          show: false,
+        },
+        tooltip: {
+          enabled: true,
+        },
+        labels: {
+          show: true,
+        },
+      },
+      grid: {
+        borderColor: "#d8dee6",
+        strokeDashArray: 5,
+        xaxis: {
+          lines: {
+            show: true,
+          },
+        },
+        yaxis: {
+          lines: {
+            show: false,
+          },
+        },
+        padding: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+        },
+      },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return val;
+          },
+        },
+      },
+      colors: [
+        "#116AEF", "#327FF2", "#5394F5", "#75AAF9", "#96BFFC", "#B7D4FF"
+      ],
+    };
+    var chart = new ApexCharts(document.querySelector("#week_client"), options);
+    chart.render();
+  </script>
+</div>
+{% else %}
+<style>
+  .app-container {
+    background-image: url("{% static "images/building.jpg" %}") !important;
+    width: 100%;
+    height: 100%;
+   }
+</style>
+<div class="app-container">
+  <img src="../static/images/building.jpg" alt="" width="100%" height="100%" style="overflow: hidden; position: fixed; top: 0; left: 0; z-index: -1;ssssss">
+</div>
+{% endif %}
+{% endblock item %}
